@@ -1,44 +1,21 @@
 <template>
-  <div :class="cardClasses">
-    <figure v-if="$slots.image">
-      <slot name="image" />
-    </figure>
+  <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
     
-    <div class="card-body">
-      <h2 v-if="title" class="card-title">
-        {{ title }}
-        <div v-if="badge" class="badge badge-secondary">{{ badge }}</div>
-      </h2>
-      
-      <slot />
-      
-      <div v-if="$slots.actions" class="card-actions justify-end mt-4">
-        <slot name="actions" />
-      </div>
+    <div v-if="$slots.header" class="px-5 py-4 border-b border-slate-100">
+      <slot name="header"></slot>
     </div>
+
+    <div class="p-5">
+      <slot></slot>
+    </div>
+
+    <div v-if="$slots.footer" class="px-5 py-3 bg-slate-50 border-t border-slate-100">
+      <slot name="footer"></slot>
+    </div>
+    
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
-
-const props = defineProps({
-  title: String,
-  badge: String,
-  bordered: Boolean,
-  compact: Boolean,
-  hover: Boolean,
-})
-
-const cardClasses = computed(() => {
-  const classes = ['card', 'bg-base-100']
-  
-  if (props.bordered) classes.push('border', 'border-base-300')
-  else classes.push('shadow-lg')
-  
-  if (props.compact) classes.push('card-compact')
-  if (props.hover) classes.push('hover:shadow-xl', 'transition-shadow', 'cursor-pointer')
-  
-  return classes.join(' ')
-})
+// مكون بسيط جداً يعتمد على الـ Slots لمرونة الاستخدام
 </script>

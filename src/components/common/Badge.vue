@@ -1,47 +1,25 @@
 <template>
-  <span :class="badgeClasses">
-    <slot />
+  <span
+    :class="[
+      'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold tracking-wide',
+      colorClasses[variant]
+    ]"
+  >
+    <slot></slot>
   </span>
 </template>
 
 <script setup>
-import { computed } from 'vue'
-
 const props = defineProps({
-  variant: {
-    type: String,
-    default: 'neutral',
-    validator: (val) => ['primary', 'secondary', 'accent', 'neutral', 'ghost', 'info', 'success', 'warning', 'error'].includes(val)
-  },
-  size: {
-    type: String,
-    default: 'md',
-    validator: (val) => ['xs', 'sm', 'md', 'lg'].includes(val)
-  },
-  outline: Boolean,
+  variant: { type: String, default: 'neutral' } // success, warning, danger, info, neutral
 })
 
-const badgeClasses = computed(() => {
-  const classes = ['badge']
-  
-  // Variant
-  if (props.variant === 'primary') classes.push('badge-primary')
-  else if (props.variant === 'secondary') classes.push('badge-secondary')
-  else if (props.variant === 'accent') classes.push('badge-accent')
-  else if (props.variant === 'ghost') classes.push('badge-ghost')
-  else if (props.variant === 'info') classes.push('badge-info')
-  else if (props.variant === 'success') classes.push('badge-success')
-  else if (props.variant === 'warning') classes.push('badge-warning')
-  else if (props.variant === 'error') classes.push('badge-error')
-  
-  // Size
-  if (props.size === 'xs') classes.push('badge-xs')
-  else if (props.size === 'sm') classes.push('badge-sm')
-  else if (props.size === 'lg') classes.push('badge-lg')
-  
-  // Outline
-  if (props.outline) classes.push('badge-outline')
-  
-  return classes.join(' ')
-})
+// ألوان أكاديمية "Pastel/Muted"
+const colorClasses = {
+  success: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
+  warning: 'bg-amber-50 text-amber-700 border border-amber-200',
+  danger: 'bg-red-50 text-red-700 border border-red-200',
+  info: 'bg-blue-50 text-blue-700 border border-blue-200',
+  neutral: 'bg-slate-100 text-slate-700 border border-slate-200'
+}
 </script>

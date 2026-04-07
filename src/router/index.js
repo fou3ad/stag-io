@@ -130,46 +130,59 @@ const router = createRouter({
  * NAVIGATION GUARDS
  * Protects routes based on authentication and roles
  */
-router.beforeEach((to, from, next) => {
-  const authStore = useAuthStore()
+router.beforeEach(async (to, from, next) => {
+  const authStore = useAuthStore();
 
-  // Check route requirements
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  const guestOnly = to.matched.some(record => record.meta.guest)
-  const requiredRole = to.matched.find(record => record.meta.role)?.meta.role
+  // Wait for auth store to finish initialising (e.g., token validation)
+  if (authStore.loading) {
+    // Optionally show a full-screen loader
+    await new Promise(resolve => {
+      const unwatch = watch(() => authStore.loading, (val) => {
+        if (!val) {
+          unwatch();
+          resolve();
+        }
+      });
+    });
+  }
 
-  // CASE 1: Route requires authentication
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  const guestOnly = to.matched.some(record => record.meta.guest);
+  const requiredRole = to.matched.find(record => record.meta.role)?.meta.role;
+
+  // Authenticated but missing role → force logout / reload
+  if (authStore.isAuthenticated && !authStore.userRole) {
+    await authStore.logout();
+    return next('/login');
+  }
+
+  // Protected route without valid session
   if (requiresAuth && !authStore.isAuthenticated) {
-    return next({
-      path: '/login',
-      query: { redirect: to.fullPath }, // Save where they wanted to go
-    })
+    return next({ path: '/login', query: { redirect: to.fullPath } });
   }
 
-  // CASE 2: Check role match
+  // Role mismatch
   if (requiresAuth && requiredRole && authStore.userRole !== requiredRole) {
-    // User logged in but wrong role - redirect to their dashboard
-    const dashboards = {
+    const roleDashboardMap = {
       student: '/student/dashboard',
       company: '/company/dashboard',
       admin: '/admin/dashboard',
-    }
-    return next(dashboards[authStore.userRole] || '/login')
+    };
+    const fallback = '/login';
+    return next(roleDashboardMap[authStore.userRole] || fallback);
   }
 
-  // CASE 3: Guest-only routes (login, register)
+  // Guest route for logged-in user
   if (guestOnly && authStore.isAuthenticated) {
-    // Already logged in - redirect to dashboard
-    const dashboards = {
+    const roleDashboardMap = {
       student: '/student/dashboard',
       company: '/company/dashboard',
       admin: '/admin/dashboard',
-    }
-    return next(dashboards[authStore.userRole] || '/')
+    };
+    return next(roleDashboardMap[authStore.userRole] || '/');
   }
 
-  // Allow navigation
-  next()
+  next();
 })
 
 export default router

@@ -1,54 +1,41 @@
 <template>
-  <div class="form-control w-full">
-    <label v-if="label" class="label">
-      <span class="label-text font-medium">
-        {{ label }}
-        <span v-if="required" class="text-error">*</span>
-      </span>
+  <div class="flex flex-col gap-1.5 w-full">
+    <label v-if="label" class="text-sm font-semibold text-slate-700">
+      {{ label }} <span v-if="required" class="text-red-500">*</span>
     </label>
-    
+
     <input
-      :type="type"
       :value="modelValue"
-      :placeholder="placeholder"
-      :disabled="disabled"
-      :class="inputClasses"
       @input="$emit('update:modelValue', $event.target.value)"
-      @blur="$emit('blur')"
+      :type="type"
+      :placeholder="placeholder"
+      :required="required"
+      :disabled="disabled"
+      :class="[
+        'w-full px-3 py-2.5 bg-white border rounded-lg text-sm transition-all outline-none',
+        error 
+          ? 'border-red-300 text-red-900 placeholder-red-300 focus:ring-2 focus:ring-red-500 focus:border-red-500' 
+          : 'border-slate-300 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-blue-600 focus:border-transparent',
+        { 'bg-slate-50 text-slate-500 cursor-not-allowed': disabled }
+      ]"
     />
-    
-    <label v-if="error" class="label">
-      <span class="label-text-alt text-error">{{ error }}</span>
-    </label>
-    
-    <label v-else-if="hint" class="label">
-      <span class="label-text-alt text-base-content/60">{{ hint }}</span>
-    </label>
+
+    <span v-if="error" class="text-xs text-red-600 mt-0.5">
+      {{ error }}
+    </span>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
-
-const props = defineProps({
-  modelValue: [String, Number],
-  type: {
-    type: String,
-    default: 'text'
-  },
-  label: String,
-  placeholder: String,
-  error: String,
-  hint: String,
-  disabled: Boolean,
-  required: Boolean,
+defineProps({
+  modelValue: { type: [String, Number], default: '' },
+  label: { type: String, default: '' },
+  type: { type: String, default: 'text' },
+  placeholder: { type: String, default: '' },
+  error: { type: String, default: '' },
+  required: { type: Boolean, default: false },
+  disabled: { type: Boolean, default: false }
 })
 
-defineEmits(['update:modelValue', 'blur'])
-
-const inputClasses = computed(() => {
-  const classes = ['input', 'input-bordered', 'w-full']
-  if (props.error) classes.push('input-error')
-  return classes.join(' ')
-})
+defineEmits(['update:modelValue'])
 </script>

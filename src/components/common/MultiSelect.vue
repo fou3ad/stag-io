@@ -1,14 +1,14 @@
 <template>
   <div class="form-control w-full">
     <label v-if="label" class="label">
-      <span class="label-text font-medium">
+      <span class="label-text font-medium text-gray-700">
         {{ label }}
-        <span v-if="required" class="text-error">*</span>
+        <span v-if="required" class="text-error ml-1">*</span>
       </span>
     </label>
     
-    <!-- Selected tags -->
-    <div class="flex flex-wrap gap-2 mb-2" v-if="modelValue.length > 0">
+    <!-- Selected items -->
+    <div v-if="modelValue.length > 0" class="flex flex-wrap gap-2 mb-2">
       <span 
         v-for="item in modelValue" 
         :key="item" 
@@ -28,7 +28,7 @@
     <!-- Dropdown -->
     <select
       :disabled="disabled"
-      class="select select-bordered w-full"
+      class="select select-bordered w-full bg-white"
       @change="addItem"
     >
       <option value="" disabled selected>{{ placeholder || 'Select items' }}</option>
@@ -59,8 +59,7 @@ const props = defineProps({
   placeholder: String,
   options: {
     type: Array,
-    required: true,
-    // Array of { value, label }
+    required: true
   },
   error: String,
   disabled: Boolean,

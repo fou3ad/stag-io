@@ -1,36 +1,26 @@
 <template>
-  <div class="overflow-x-auto">
-    <table class="table">
-      <thead>
+  <div class="w-full overflow-x-auto bg-white border border-slate-200 rounded-xl shadow-sm">
+    <table class="w-full text-left text-sm text-slate-600">
+      
+      <thead class="bg-slate-50 text-slate-500 uppercase text-xs font-semibold border-b border-slate-200">
         <tr>
-          <th v-for="column in columns" :key="column.key">
-            {{ column.label }}
+          <th v-for="(col, index) in columns" :key="index" class="px-6 py-4 whitespace-nowrap">
+            {{ col.label }}
           </th>
         </tr>
       </thead>
-      <tbody>
-        <tr v-for="(row, index) in data" :key="index" class="hover">
-          <td v-for="column in columns" :key="column.key">
-            <slot :name="`cell-${column.key}`" :row="row" :value="row[column.key]">
-              {{ row[column.key] }}
-            </slot>
-          </td>
-        </tr>
+      
+      <tbody class="divide-y divide-slate-100">
+        <slot></slot>
       </tbody>
+      
     </table>
   </div>
 </template>
 
 <script setup>
 defineProps({
-  columns: {
-    type: Array,
-    required: true,
-    // Array of { key, label }
-  },
-  data: {
-    type: Array,
-    required: true
-  }
+  // مصفوفة لتحديد الأعمدة، مثلاً: [{ label: 'Nom' }, { label: 'Statut' }, { label: 'Actions' }]
+  columns: { type: Array, required: true } 
 })
 </script>

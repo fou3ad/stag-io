@@ -1,6 +1,6 @@
 <template>
-  <Modal v-model="modelValue" :title="title" size="sm">
-    <p class="text-base-content/80">{{ message }}</p>
+  <Modal v-model="modelValue" :title="title">
+    <p class="text-gray-600">{{ message }}</p>
     
     <template #actions>
       <Button variant="ghost" @click="cancel">{{ cancelText }}</Button>

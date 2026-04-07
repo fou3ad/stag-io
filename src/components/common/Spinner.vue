@@ -1,5 +1,5 @@
 <template>
-  <span :class="spinnerClasses"></span>
+  <span :class="spinnerClass"></span>
 </template>
 
 <script setup>
@@ -9,15 +9,14 @@ const props = defineProps({
   size: {
     type: String,
     default: 'md',
-    validator: (val) => ['xs', 'sm', 'md', 'lg'].includes(val)
+    validator: (v) => ['sm', 'md', 'lg'].includes(v)
   }
 })
 
-const spinnerClasses = computed(() => {
+const spinnerClass = computed(() => {
   const classes = ['loading', 'loading-spinner']
   
-  if (props.size === 'xs') classes.push('loading-xs')
-  else if (props.size === 'sm') classes.push('loading-sm')
+  if (props.size === 'sm') classes.push('loading-sm')
   else if (props.size === 'lg') classes.push('loading-lg')
   
   return classes.join(' ')

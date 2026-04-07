@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center justify-center py-8">
-    <span :class="loaderClasses"></span>
+    <span :class="loaderClass"></span>
   </div>
 </template>
 
@@ -11,15 +11,14 @@ const props = defineProps({
   size: {
     type: String,
     default: 'md',
-    validator: (val) => ['xs', 'sm', 'md', 'lg'].includes(val)
+    validator: (v) => ['sm', 'md', 'lg'].includes(v)
   }
 })
 
-const loaderClasses = computed(() => {
+const loaderClass = computed(() => {
   const classes = ['loading', 'loading-spinner', 'text-primary']
   
-  if (props.size === 'xs') classes.push('loading-xs')
-  else if (props.size === 'sm') classes.push('loading-sm')
+  if (props.size === 'sm') classes.push('loading-sm')
   else if (props.size === 'lg') classes.push('loading-lg')
   
   return classes.join(' ')
